@@ -3,213 +3,248 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PsychTools 2.0 | Erisma</title>
+    <title>PsychTools Ultra | Erisma</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .active-tab { border-bottom: 3px solid #4f46e5; color: #4f46e5; }
-        .symbol-badge { cursor: pointer; transition: all 0.2s; }
-        .symbol-badge:hover { background-color: #e0e7ff; transform: translateY(-2px); }
+        .active-tab { border-bottom: 4px solid #4f46e5; color: #4f46e5; font-weight: 900; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans">
+<body class="bg-slate-100 text-slate-900 font-sans antialiased">
 
-    <header class="bg-white border-b px-6 py-4 flex justify-between items-center sticky top-0 z-20 shadow-sm">
+    <header class="bg-white border-b px-6 py-5 flex justify-between items-center sticky top-0 z-50 shadow-sm">
         <div>
-            <h1 class="text-xl font-black text-indigo-600 tracking-tight">PsychTools 2.0</h1>
-            <p class="text-[10px] text-slate-400 font-bold uppercase">Erisma Medical Centre</p>
+            <h1 class="text-2xl font-black text-indigo-700 tracking-tighter">PsychTools <span class="text-slate-400">Ultra</span></h1>
+            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Erisma Medical Centre / Khmelnytskyi</p>
         </div>
-        <div class="bg-indigo-50 px-3 py-1 rounded-full text-indigo-600 text-[10px] font-bold">PRO</div>
+        <div class="flex gap-2">
+            <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-1 rounded">LOCAL_AI</span>
+        </div>
     </header>
 
-    <nav class="flex bg-white border-b sticky top-[65px] z-10 shadow-sm">
-        <button onclick="openTab('tests', this)" class="tab-btn flex-1 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 active-tab">Тести</button>
-        <button onclick="openTab('dreams', this)" class="tab-btn flex-1 py-4 text-xs font-bold uppercase tracking-widest text-slate-400">Сни</button>
-        <button onclick="openTab('glossary', this)" class="tab-btn flex-1 py-4 text-xs font-bold uppercase tracking-widest text-slate-400">Глосарій</button>
+    <nav class="flex bg-white border-b sticky top-[77px] z-40 shadow-sm overflow-x-auto">
+        <button onclick="openTab('tests', this)" class="tab-btn flex-1 py-4 px-6 text-xs font-black uppercase tracking-widest text-slate-400 active-tab">Діагностика</button>
+        <button onclick="openTab('dreams', this)" class="tab-btn flex-1 py-4 px-6 text-xs font-black uppercase tracking-widest text-slate-400">Аналіз_Снів</button>
+        <button onclick="openTab('glossary', this)" class="tab-btn flex-1 py-4 px-6 text-xs font-black uppercase tracking-widest text-slate-400">База_Знань</button>
     </nav>
 
-    <main class="p-4 max-w-lg mx-auto pb-24">
+    <main class="p-4 max-w-2xl mx-auto pb-32">
 
         <div id="tests" class="tab-content active space-y-4">
-            <div id="test-list" class="space-y-3">
-                <div onclick="startTest('PHQ-9')" class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm hover:border-indigo-400 transition-all cursor-pointer">
+            <div id="test-list" class="grid grid-cols-1 gap-3">
+                <div onclick="startTest('PHQ9')" class="bg-white p-5 rounded-3xl border-2 border-transparent hover:border-indigo-500 shadow-sm cursor-pointer transition-all">
                     <div class="flex justify-between items-center">
-                        <div>
-                            <span class="text-xs font-bold text-indigo-500 uppercase">Скринінг</span>
-                            <h3 class="font-black text-lg">PHQ-9</h3>
-                            <p class="text-xs text-slate-500 italic">Оцінка ступеня тяжкості депресії</p>
-                        </div>
-                        <i class="fa-solid fa-circle-play text-indigo-600 text-2xl"></i>
+                        <div><h3 class="font-black text-lg text-slate-800">PHQ-9</h3><p class="text-xs text-slate-500">Скринінг депресивних станів</p></div>
+                        <i class="fa-solid fa-brain text-indigo-600"></i>
+                    </div>
+                </div>
+                <div onclick="startTest('GAD7')" class="bg-white p-5 rounded-3xl border-2 border-transparent hover:border-indigo-500 shadow-sm cursor-pointer transition-all">
+                    <div class="flex justify-between items-center">
+                        <div><h3 class="font-black text-lg text-slate-800">GAD-7</h3><p class="text-xs text-slate-500">Шкала тривожних розладів</p></div>
+                        <i class="fa-solid fa-bolt-lightning text-amber-500"></i>
                     </div>
                 </div>
             </div>
 
-            <div id="test-window" class="hidden bg-white p-6 rounded-3xl border shadow-xl space-y-6">
-                <div class="border-b pb-4 flex justify-between">
-                    <h3 class="font-black text-indigo-600 uppercase">Тест: PHQ-9</h3>
-                    <button onclick="cancelTest()" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <div id="questions-container" class="space-y-8 h-[400px] overflow-y-auto pr-2"></div>
-                <button onclick="finishTest()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-lg">Завершити та порахувати</button>
+            <div id="test-window" class="hidden bg-white p-6 rounded-[2rem] border shadow-2xl space-y-6">
+                <div id="questions-container" class="space-y-8 max-h-[60vh] overflow-y-auto pr-2"></div>
+                <button onclick="finishTest()" class="w-full bg-indigo-600 text-white py-5 rounded-2xl font-black text-lg shadow-xl hover:bg-indigo-700">ОТРИМАТИ РЕЗУЛЬТАТ</button>
             </div>
 
-            <div id="test-result" class="hidden bg-indigo-600 p-8 rounded-[40px] text-white space-y-4 shadow-2xl">
-                <div class="text-center">
-                    <p class="text-xs font-bold uppercase opacity-70">Результат скринінгу</p>
-                    <h2 id="score-display" class="text-7xl font-black my-2">0</h2>
-                    <p id="interpretation" class="text-lg font-bold leading-tight"></p>
+            <div id="test-result" class="hidden animate-in fade-in zoom-in duration-300">
+                <div class="bg-slate-900 text-white p-8 rounded-[2.5rem] shadow-2xl">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-2">Клінічний висновок</p>
+                    <div class="flex items-baseline gap-4 mb-4">
+                        <h2 id="score-display" class="text-7xl font-black">0</h2>
+                        <span id="interp-label" class="text-xl font-bold text-indigo-300 leading-tight"></span>
+                    </div>
+                    <div id="interp-details" class="text-sm text-slate-300 leading-relaxed border-t border-slate-700 pt-4 italic"></div>
+                    <button onclick="cancelTest()" class="mt-6 w-full py-3 bg-slate-800 rounded-xl text-xs font-bold uppercase tracking-widest">Повернутися до списку</button>
                 </div>
-                <button id="copyResultBtn" class="w-full bg-white text-indigo-600 py-4 rounded-2xl font-black mt-4">Копіювати для AI-аналізу</button>
             </div>
         </div>
 
         <div id="dreams" class="tab-content space-y-6">
-            <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
-                <h3 class="font-black text-slate-800 mb-3">Словник архетипів</h3>
-                <div class="flex flex-wrap gap-2" id="symbol-list">
-                    </div>
-                <div id="symbol-detail" class="mt-4 p-4 bg-indigo-50 rounded-2xl text-xs text-indigo-800 hidden italic"></div>
+            <div class="bg-white p-6 rounded-[2rem] shadow-sm border space-y-4">
+                <h3 class="font-black text-slate-800">Інтерактивна база архетипів</h3>
+                <div id="symbol-cloud" class="flex flex-wrap gap-2"></div>
             </div>
 
-            <div class="space-y-2">
-                <label class="text-[10px] font-black uppercase text-slate-400 ml-2">Опис сну</label>
-                <textarea id="dreamInput" class="w-full h-44 p-5 border-2 border-slate-100 rounded-[30px] outline-none focus:border-indigo-500 transition-all text-sm shadow-inner" placeholder="Які образи запам'яталися?"></textarea>
-            </div>
-            
-            <button onclick="generateDreamPrompt()" class="w-full bg-slate-900 text-white py-5 rounded-[25px] font-black shadow-xl">Аналізувати через AI</button>
-            
-            <div id="dreamResult" class="hidden animate-pulse">
-                <div id="dreamPromptText" class="p-4 bg-indigo-50 rounded-2xl text-[10px] text-indigo-900 border border-indigo-200"></div>
-                <button onclick="copyText('dreamPromptText')" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold mt-2 shadow-lg">Копіювати промпт</button>
+            <textarea id="dreamInput" class="w-full h-48 p-6 bg-white border-2 border-slate-100 rounded-[2rem] outline-none focus:border-indigo-500 shadow-inner text-sm" placeholder="Опишіть сюжет сну..."></textarea>
+            <button onclick="analyzeDream()" class="w-full bg-indigo-600 text-white py-5 rounded-2xl font-black text-lg shadow-xl">МИТТЄВИЙ АНАЛІЗ</button>
+
+            <div id="dream-analysis-result" class="hidden bg-white p-8 rounded-[2.5rem] border-2 border-indigo-100 shadow-xl space-y-4">
+                <h4 class="font-black text-indigo-600 uppercase text-xs tracking-widest">Психологічний розбір</h4>
+                <div id="analysis-text" class="text-sm text-slate-700 leading-relaxed space-y-3"></div>
             </div>
         </div>
 
         <div id="glossary" class="tab-content space-y-4">
-            <div class="relative">
-                <input type="text" id="glossarySearch" onkeyup="filterGlossary()" placeholder="Шукати термін..." class="w-full p-4 pl-12 bg-white border rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
-                <i class="fa-solid fa-search absolute left-5 top-5 text-slate-300"></i>
+            <div class="sticky top-[140px] z-30 bg-slate-100 pb-2">
+                <input type="text" id="glSearch" onkeyup="filterGlossary()" placeholder="Швидкий пошук у базі..." class="w-full p-4 rounded-2xl border-2 border-slate-200 outline-none focus:border-indigo-500 shadow-sm">
             </div>
-            <div id="glossaryList" class="space-y-3"></div>
+            <div id="glList" class="space-y-3"></div>
         </div>
 
     </main>
 
     <script>
-        // БАЗА ДАНИХ СИМВОЛІВ
+        // ВЕЛИКА БАЗА ДАНИХ ТЕРМІНІВ (30+)
+        const glossaryData = [
+            { t: "Агресія", c: "Симптом", d: "Поведінка, спрямована на заподіяння шкоди; у терапії розглядається як захист." },
+            { t: "Адаптація", c: "Психологія", d: "Пристосування психіки до нових умов життя (важливо для військових)." },
+            { t: "Алекситимія", c: "Симптом", d: "Труднощі у визначенні та описі власних емоцій." },
+            { t: "Амбівалентність", c: "Стан", d: "Одночасне існування суперечливих почуттів (любов і ненависть)." },
+            { t: "Аперцепція", c: "Теорія", d: "Залежність сприйняття від минулого досвіду людини." },
+            { t: "Архетип", c: "Юнгіанство", d: "Універсальний вроджений образ (Мати, Герой, Тінь)." },
+            { t: "Аффект", c: "Стан", d: "Короткочасна, бурхлива емоційна реакція." },
+            { t: "Валідація", c: "Техніка", d: "Визнання почуттів клієнта значущими та зрозумілими." },
+            { t: "Витіснення", c: "Захист", d: "Переведення травматичних спогадів у несвідоме." },
+            { t: "Гештальт", c: "Підхід", d: "Цілісний образ; терапія фокусується на 'тут і зараз'." },
+            { t: "Депресія", c: "Розлад", d: "Пригнічений стан, втрата інтересу до життя понад 2 тижні." },
+            { t: "Дисоціація", c: "Захист", d: "Відчуття відстороненості від власного тіла або реальності." },
+            { t: "Емпатія", c: "Навичка", d: "Здатність відчувати емоційний стан іншої людини." },
+            { t: "Інсайт", c: "Терапія", d: "Раптове усвідомлення причини проблеми." },
+            { t: "Інтроєкція", c: "Захист", d: "Безкритичне засвоєння чужих переконань та правил." },
+            { t: "Катарсис", c: "Стан", d: "Емоційне розвантаження, очищення через переживання." },
+            { t: "Компульсія", c: "Симптом", d: "Нав'язлива дія для зменшення тривоги." },
+            { t: "Конгруентність", c: "Стан", d: "Відповідність зовнішніх проявів внутрішнім почуттям." },
+            { t: "Контрперенос", c: "Терапія", d: "Емоції терапевта, що виникають у відповідь на клієнта." },
+            { t: "КПТ", c: "Підхід", d: "Когнітивно-поведінкова терапія: зміна думок для зміни поведінки." },
+            { t: "Лібідо", c: "Психоаналіз", d: "Енергія життєвих потягів (за Фройдом)." },
+            { t: "Нарцисизм", c: "Риса", d: "Надмірна самозакоханість при низькій самооцінці всередині." },
+            { t: "Невроз", c: "Розлад", d: "Зворотний розлад психіки через тривалий стрес." },
+            { t: "ОКР", c: "Розлад", d: "Обсесивно-компульсивний розлад (нав'язливості)." },
+            { t: "Панічна атака", c: "Стан", d: "Раптовий напад сильного страху з фізичними симптомами." },
+            { t: "ПТСР", c: "Розлад", d: "Посттравматичний стресовий розлад після важкої події." },
+            { t: "Регресія", c: "Захист", d: "Повернення до дитячих форм поведінки у стресі." },
+            { t: "Рефлексія", c: "Навичка", d: "Аналіз власних психічних станів." },
+            { t: "Сублімація", c: "Захист", d: "Перетворення імпульсів у соціально корисну діяльність." },
+            { t: "Тінь", c: "Юнгіанство", d: "Неусвідомлювані, 'темні' сторони особистості." },
+            { t: "Фобія", c: "Розлад", d: "Надмірний ірраціональний страх об'єктів або ситуацій." }
+        ];
+
+        // БАЗА АРХЕТИПІВ СНІВ (20+)
         const dreamSymbols = {
-            "Вода": "Емоції, несвідоме. Чиста — спокій; каламутна — тривога; повінь — втрата контролю.",
-            "Будинок": "Структура особистості. Кімнати — різні аспекти 'Я'. Підвал — глибоке несвідоме.",
-            "Переслідування": "Втеча від внутрішнього конфлікту або тіньових сторін, які ви не хочете визнавати.",
-            "Зуби": "Втрата контролю, страх старіння або безсилля у важливій ситуації.",
-            "Політ": "Прагнення до свободи, відсторонення від земних проблем або духовне зростання.",
-            "Ліс": "Невідомість, мандрівка у несвідоме. Загубитися — пошук себе.",
-            "Вогонь": "Трансформація, сильна пристрасть або руйнівний гнів.",
-            "Тварини": "Інстинкти. Дика тварина — некерована сила; домашня — приручені почуття."
+            "Вода": "Емоційне життя. Прозора — ясність; бурхлива — неконтрольовані почуття; затоплення — поглинання емоціями.",
+            "Будинок": "Ваше 'Я'. Горище — інтелект; підвал — несвідоме; нові кімнати — приховані таланти.",
+            "Переслідування": "Втеча від обов'язків або страхів, які ви боїтеся визнати.",
+            "Зуби": "Втрата сили, авторитету або страх перед прийняттям важливого рішення.",
+            "Політ": "Звільнення від тиску, погляд зверху або відрив від реальності.",
+            "Ліс": "Шлях у невідоме, несвідоме. Заблукати — пошук сенсу.",
+            "Тварини": "Ваші інстинкти. Собака — вірність/друзі; змія — зрада або мудрість; кіт — незалежність.",
+            "Вогонь": "Очищення або небезпечна агресія. Трансформація через кризу.",
+            "Гроші": "Оцінка власної вартості, ресурсів або впевненості.",
+            "Смерть": "Кінець етапу, перехід до нового. Не буквально, а як символ змін.",
+            "Одяг": "Соціальна маска (Персона). Голий — незахищеність; дивний одяг — пошук ролі.",
+            "Транспорт": "Рух по життю. Несправність — зупинка у розвитку; швидка їзда — поспіх.",
+            "Дитина": "Новий проект, потенціал або ваше 'внутрішнє дитя'.",
+            "Годинник": "Страх втрати часу, дедлайни або тиск віку.",
+            "Падіння": "Втрата контролю, невпевненість у собі або страх поразки.",
+            "Дзеркало": "Самопізнання. Викривлене — спотворене сприйняття себе.",
+            "Лабіринт": "Складний вибір, заплутаність у життєвій ситуації.",
+            "Ключі": "Рішення проблем, доступ до таємниць або нових можливостей.",
+            "Павук": "Впливова фігура (часто мати) або плетіння складної ситуації.",
+            "Міст": "Перехідний період, зв'язок між двома етапами життя."
         };
 
-        const terms = [
-            { t: "Несвідоме", c: "Психоаналіз", d: "Психічні процеси, що не усвідомлюються, але впливають на життя." },
-            { t: "Тінь", c: "Юнгіанство", d: "Аспекти особистості, які людина в собі заперечує або не помічає." },
-            { t: "Автоматичні думки", c: "КПТ", d: "Швидкі, оціночні думки, що виникають миттєво як реакція на подію." },
-            { t: "Аніма / Анімус", c: "Юнгіанство", d: "Внутрішні образи жіночності в чоловіках та мужності в жінках." },
-            { t: "Рефлексія", c: "Терапія", d: "Здатність усвідомлювати власні думки, емоції та стани." },
-            { t: "Перенос", c: "Психоаналіз", d: "Коли пацієнт переносить почуття до значущих людей на терапевта." }
-        ];
+        // ТЕСТИ
+        const tests = {
+            PHQ9: {
+                title: "PHQ-9 (Депресія)",
+                questions: [
+                    "Малий інтерес до справ?", "Пригніченість, безнадія?", "Проблеми зі сном?", "Втома?", "Поганий апетит/переїдання?",
+                    "Відчуття себе невдахою?", "Важкість у концентрації?", "Уповільненість/метушливість?", "Думки про шкоду собі?"
+                ]
+            },
+            GAD7: {
+                title: "GAD-7 (Тривога)",
+                questions: [
+                    "Нервовість, тривога?", "Неможливість зупинити хвилювання?", "Занадто багато хвилювань?", "Важкість у розслабленні?",
+                    "Несидючість?", "Роздратованість?", "Страх, ніби станеться щось жахливе?"
+                ]
+            }
+        };
 
-        const phq9Questions = [
-            "Малий інтерес або задоволення від справ?",
-            "Відчуття пригніченості, депресії або безнадії?",
-            "Труднощі з засинанням, переривчастий сон або забагато сну?",
-            "Відчуття втоми або брак енергії?",
-            "Поганий апетит або переїдання?",
-            "Погане ставлення до себе (відчуття невдахи тощо)?",
-            "Труднощі з концентрацією (читання, ТБ)?",
-            "Заторможеність або, навпаки, надмірна метушливість?",
-            "Думки про те, що краще було б померти, або про заподіяння собі шкоди?"
-        ];
-
-        // ІНІЦІАЛІЗАЦІЯ
-        function init() {
-            // Заповнення символів
-            const symbolList = document.getElementById('symbol-list');
-            Object.keys(dreamSymbols).forEach(s => {
-                symbolList.innerHTML += `<span onclick="showSymbol('${s}')" class="symbol-badge px-3 py-1 bg-white border border-slate-200 rounded-full text-[10px] font-bold text-slate-600 shadow-sm">${s}</span>`;
-            });
-            // Заповнення глосарію
-            const glList = document.getElementById('glossaryList');
-            glList.innerHTML = terms.map(item => `
-                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-                    <span class="text-[8px] font-black text-indigo-500 uppercase tracking-tighter">${item.c}</span>
-                    <h4 class="font-black text-slate-800">${item.t}</h4>
-                    <p class="text-xs text-slate-500 mt-1">${item.d}</p>
-                </div>
-            `).join('');
-        }
-
-        function showSymbol(s) {
-            const detail = document.getElementById('symbol-detail');
-            detail.innerText = dreamSymbols[s];
-            detail.classList.remove('hidden');
-        }
+        let currentTestType = null;
+        let testScores = [];
 
         function startTest(type) {
+            currentTestType = type;
             document.getElementById('test-list').classList.add('hidden');
             document.getElementById('test-window').classList.remove('hidden');
-            const container = document.getElementById('questions-container');
-            container.innerHTML = phq9Questions.map((q, i) => `
+            const qContainer = document.getElementById('questions-container');
+            qContainer.innerHTML = tests[type].questions.map((q, i) => `
                 <div class="space-y-4">
-                    <p class="text-sm font-bold text-slate-800 leading-tight">${i+1}. ${q}</p>
-                    <div class="grid grid-cols-4 gap-2">
-                        ${['Ніколи', 'Кілька днів', 'Півмісяця', 'Майже щодня'].map((v, idx) => `
-                            <button onclick="setScore(${i}, ${idx}, this)" class="q-btn-${i} py-2 text-[8px] font-black uppercase border rounded-xl bg-slate-50 text-slate-400">${v}</button>
-                        `).join('')}
+                    <p class="font-bold text-slate-700 leading-tight">${i+1}. ${q}</p>
+                    <div class="flex gap-2">
+                        ${['0','1','2','3'].map(v => `<button onclick="setScore(${i}, ${v}, this)" class="q-btn-${i} flex-1 py-3 border-2 rounded-xl text-xs font-black bg-slate-50 text-slate-400">${v}</button>`).join('')}
                     </div>
                 </div>
             `).join('');
-            window.currentScores = new Array(phq9Questions.length).fill(null);
+            testScores = new Array(tests[type].questions.length).fill(null);
         }
 
-        window.setScore = function(qI, val, btn) {
-            window.currentScores[qI] = val;
+        window.setScore = (qI, v, btn) => {
+            testScores[qI] = v;
             document.querySelectorAll(`.q-btn-${qI}`).forEach(b => {
                 b.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
                 b.classList.add('bg-slate-50', 'text-slate-400');
             });
             btn.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
-            btn.classList.remove('bg-slate-50', 'text-slate-400');
-        }
+        };
 
         function finishTest() {
-            if (window.currentScores.includes(null)) return alert('Дайте відповідь на всі 9 питань!');
-            const total = window.currentScores.reduce((a, b) => a + b, 0);
+            if (testScores.includes(null)) return alert("Дайте всі відповіді!");
+            const total = testScores.reduce((a, b) => a + b, 0);
             document.getElementById('test-window').classList.add('hidden');
             document.getElementById('test-result').classList.remove('hidden');
             document.getElementById('score-display').innerText = total;
-            
-            let interpretation = "";
-            if(total <= 4) interpretation = "Мінімальна депресія. Норма.";
-            else if(total <= 9) interpretation = "Легка депресія. Можливе спостереження.";
-            else if(total <= 14) interpretation = "Помірна депресія. Рекомендована терапія.";
-            else if(total <= 19) interpretation = "Помірно тяжка депресія. Потрібна допомога.";
-            else interpretation = "Тяжка депресія. Необхідне термінове втручання.";
-            
-            document.getElementById('interpretation').innerText = interpretation;
 
-            document.getElementById('copyResultBtn').onclick = () => {
-                const p = `Дій як клінічний психолог. Пацієнт пройшов тест PHQ-9 і набрав ${total} балів (${interpretation}). Зроби розбір стану та підготуй план першої сесії.`;
-                navigator.clipboard.writeText(p);
-                alert('Скопійовано! Встав це в чат з AI.');
-            };
+            let label = "", details = "";
+            if (currentTestType === 'PHQ9') {
+                if (total <= 4) { label = "Норма"; details = "Депресивні симптоми мінімальні або відсутні."; }
+                else if (total <= 9) { label = "Легка депресія"; details = "Потребує спостереження. Зверніть увагу на режим та відпочинок."; }
+                else if (total <= 14) { label = "Помірна депресія"; details = "Рекомендована консультація психолога для розбору когнітивних установок."; }
+                else { label = "Важка депресія"; details = "Високий ризик. Необхідне термінове клінічне втручання та підтримка."; }
+            } else {
+                if (total <= 4) { label = "Норма"; details = "Рівень тривоги у межах допустимого."; }
+                else if (total <= 9) { label = "Помірна тривога"; details = "Можливе вигорання або ситуативний стрес."; }
+                else { label = "Висока тривога"; details = "Рекомендовані техніки заземлення та професійна допомога."; }
+            }
+            document.getElementById('interp-label').innerText = label;
+            document.getElementById('interp-details').innerText = details;
         }
 
-        function generateDreamPrompt() {
-            const txt = document.getElementById('dreamInput').value;
-            if(!txt) return alert('Опишіть хоча б один символ!');
-            const p = `Дій як юнгіанський аналітик. Сон: "${txt}". Проаналізуй символи, виділи архетипи та сформулюй 3 питання для клієнта, щоб розкрити зміст сну.`;
-            document.getElementById('dreamPromptText').innerText = p;
-            document.getElementById('dreamResult').classList.remove('hidden');
+        function analyzeDream() {
+            const input = document.getElementById('dreamInput').value.toLowerCase();
+            if (!input) return alert("Опишіть сон!");
+            
+            let found = [];
+            Object.keys(dreamSymbols).forEach(s => {
+                if (input.includes(s.toLowerCase().substring(0, 4))) found.push(`<b>${s}:</b> ${dreamSymbols[s]}`);
+            });
+
+            document.getElementById('dream-analysis-result').classList.remove('hidden');
+            const container = document.getElementById('analysis-text');
+            
+            if (found.length > 0) {
+                container.innerHTML = `<p><b>Знайдені символи:</b></p><ul>${found.map(f => `<li class="mb-2"> - ${f}</li>`).join('')}</ul>
+                <p class="mt-4 border-t pt-2 text-[10px] text-slate-400">Цей аналіз базується на юнгіанській школі. Спробуйте пов'язати ці символи з подіями останнього тижня.</p>`;
+            } else {
+                container.innerHTML = "Символів у базі не знайдено. Спробуйте описати більш детально (вода, ліс, зуби, падіння тощо).";
+            }
+        }
+
+        function filterGlossary() {
+            let val = document.getElementById('glSearch').value.toLowerCase();
+            document.querySelectorAll('.gl-item').forEach(i => {
+                i.style.display = i.innerText.toLowerCase().includes(val) ? 'block' : 'none';
+            });
         }
 
         function openTab(t, b) {
@@ -221,15 +256,19 @@
 
         function cancelTest() {
             document.getElementById('test-window').classList.add('hidden');
+            document.getElementById('test-result').classList.add('hidden');
             document.getElementById('test-list').classList.remove('hidden');
         }
 
-        function copyText(id) {
-            navigator.clipboard.writeText(document.getElementById(id).innerText);
-            alert('Скопійовано!');
-        }
+        // Ініціалізація
+        const glList = document.getElementById('glList');
+        glList.innerHTML = glossaryData.map(i => `
+            <div class="gl-item bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <span class="text-[9px] font-black text-indigo-500 uppercase tracking-widest">${i.c}</span>
+                <h4 class="font-black text-slate-800 text-lg">${i.t}</h4>
+                <p class="text-xs text-slate-500 mt-1">${i.d}</p>
+            </div>
+        `).join('');
 
-        init();
-    </script>
-</body>
-</html>
+        const cloud = document.getElementById('symbol-cloud');
+        Object.keys(dreamSymbols).forEach(s
