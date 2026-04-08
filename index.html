@@ -41,15 +41,11 @@
 
         <div id="tests" class="tab-content active space-y-3">
             <h2 class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Діагностичні шкали</h2>
-            <div class="bg-white p-4 rounded-xl border shadow-sm flex justify-between items-center cursor-pointer hover:bg-gray-50">
-                <div><span class="font-bold">PHQ-9</span> <p class="text-xs text-gray-500">Опитувальник здоров'я пацієнта (депресія)</p></div>
+            <div onclick="alert('У розробці: Тут буде форма для тестування')" class="bg-white p-4 rounded-xl border shadow-sm flex justify-between items-center cursor-pointer hover:bg-gray-50">
+                <div><span class="font-bold">PHQ-9 / GAD-7</span> <p class="text-xs text-gray-500">Депресія та тривога</p></div>
                 <i class="fa-solid fa-chevron-right text-gray-300"></i>
             </div>
-            <div class="bg-white p-4 rounded-xl border shadow-sm flex justify-between items-center cursor-pointer hover:bg-gray-50">
-                <div><span class="font-bold">GAD-7</span> <p class="text-xs text-gray-500">Шкала тривоги</p></div>
-                <i class="fa-solid fa-chevron-right text-gray-300"></i>
-            </div>
-            <div class="bg-white p-4 rounded-xl border shadow-sm flex justify-between items-center cursor-pointer hover:bg-gray-50 text-indigo-600 border-indigo-100">
+            <div onclick="alert('У розробці: Тут буде форма для скринінгу PCL-5')" class="bg-white p-4 rounded-xl border shadow-sm flex justify-between items-center cursor-pointer hover:bg-gray-50 text-indigo-600 border-indigo-100">
                 <div><span class="font-bold italic">PCL-5</span> <p class="text-xs text-gray-500">Скринінг ПТСР</p></div>
                 <i class="fa-solid fa-chevron-right text-indigo-300"></i>
             </div>
@@ -58,45 +54,41 @@
         <div id="dreams" class="tab-content space-y-4">
             <div class="bg-indigo-600 p-4 rounded-2xl text-white shadow-lg">
                 <h3 class="font-bold mb-1">Що вам наснилося?</h3>
-                <p class="text-xs opacity-80">Опишіть сюжет, і я проаналізую символи через юнгіанські архетипи.</p>
+                <p class="text-xs opacity-80">Опишіть сюжет для юнгіанського аналізу.</p>
             </div>
-            <div class="flex gap-2 overflow-x-auto pb-2">
-                <span class="px-3 py-1 bg-white border rounded-full text-xs whitespace-nowrap">🌊 Вода</span>
-                <span class="px-3 py-1 bg-white border rounded-full text-xs whitespace-nowrap">🕊️ Політ</span>
-                <span class="px-3 py-1 bg-white border rounded-full text-xs whitespace-nowrap">🏃 Переслідування</span>
-                <span class="px-3 py-1 bg-white border rounded-full text-xs whitespace-nowrap">🦷 Зуби</span>
+            <textarea id="dreamInput" class="w-full h-40 p-4 border rounded-2xl outline-none shadow-inner text-sm" placeholder="Запишіть деталі сну..."></textarea>
+            <button onclick="generateDreamPrompt()" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold">Сформувати запит для AI</button>
+            <div id="dreamResult" class="hidden space-y-2">
+                <p class="text-[10px] font-bold text-gray-400 uppercase">Готовий промпт:</p>
+                <div id="dreamPromptText" class="p-3 bg-gray-100 rounded-lg text-xs italic text-gray-700 border border-dashed border-gray-300"></div>
+                <button onclick="copyText('dreamPromptText')" class="w-full bg-green-500 text-white py-2 rounded-lg text-sm font-bold tracking-wide">Копіювати та йти до Клода</button>
             </div>
-            <textarea class="w-full h-48 p-4 border rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none shadow-inner" placeholder="Запишіть деталі сну..."></textarea>
-            <button class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all">Аналізувати символ</button>
         </div>
 
         <div id="glossary" class="tab-content space-y-3">
             <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400"></i>
-                <input type="text" placeholder="Пошук терміна..." class="w-full pl-10 pr-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-indigo-500">
+                <input type="text" placeholder="Пошук (несвідоме, КПТ...)" class="w-full pl-10 pr-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-indigo-500">
             </div>
-            <div class="grid grid-cols-1 gap-3">
+            <div class="grid grid-cols-1 gap-3 text-sm">
                 <div class="bg-white p-3 rounded-lg border">
                     <span class="text-[10px] text-indigo-500 font-bold uppercase">Психоаналіз</span>
-                    <h4 class="font-bold">Несвідоме</h4>
-                    <p class="text-xs text-gray-600">Сукупність психічних процесів, які не доступні для безпосереднього усвідомлення.</p>
-                </div>
-                <div class="bg-white p-3 rounded-lg border">
-                    <span class="text-[10px] text-indigo-500 font-bold uppercase">КПТ</span>
-                    <h4 class="font-bold">Когнітивне викривлення</h4>
-                    <p class="text-xs text-gray-600">Систематичні помилки у мисленні, які заважають логічному сприйняттю реальності.</p>
+                    <h4 class="font-bold">Несвідоме (несвідоме)</h4>
+                    <p class="text-xs text-gray-600">Процеси, що не піддаються усвідомленню, але впливають на поведінку.</p>
                 </div>
             </div>
         </div>
 
-        <div id="ai" class="tab-content flex flex-col items-center justify-center py-10 space-y-4">
-            <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center">
-                <i class="fa-solid fa-robot text-indigo-600 text-2xl"></i>
+        <div id="ai" class="tab-content space-y-4 text-center">
+            <div class="py-10">
+                <i class="fa-solid fa-robot text-indigo-600 text-4xl mb-4"></i>
+                <p class="text-sm text-gray-500">Опишіть кейс або питання, і я зроблю структуру для чату з AI.</p>
             </div>
-            <p class="text-center text-gray-500 text-sm">Ваш AI-супервізор готовий до роботи. <br>Введіть запит для аналізу сесії.</p>
-            <div class="w-full flex gap-2">
-                <input type="text" placeholder="Запитати..." class="flex-1 border p-2 rounded-lg text-sm">
-                <button class="bg-indigo-600 text-white p-2 rounded-lg px-4 italic">OK</button>
+            <textarea id="caseInput" class="w-full h-32 p-4 border rounded-2xl text-sm" placeholder="Наприклад: Техніки роботи з тривогою для клієнта 30 років..."></textarea>
+            <button onclick="generateCasePrompt()" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold">Зробити запит для супервізора</button>
+            <div id="caseResult" class="hidden space-y-2">
+                <div id="casePromptText" class="p-3 bg-gray-100 rounded-lg text-[11px] text-gray-700 border border-dashed border-gray-300"></div>
+                <button onclick="copyText('casePromptText')" class="w-full bg-green-500 text-white py-2 rounded-lg text-sm font-bold">Копіювати запит</button>
             </div>
         </div>
 
@@ -106,15 +98,34 @@
         function openTab(tabName, btn) {
             let i, content, tabs;
             content = document.getElementsByClassName("tab-content");
-            for (i = 0; i < content.length; i++) {
-                content[i].classList.remove("active");
-            }
+            for (i = 0; i < content.length; i++) { content[i].classList.remove("active"); }
             tabs = document.getElementsByClassName("tab-btn");
-            for (i = 0; i < tabs.length; i++) {
-                tabs[i].classList.remove("active-tab");
-            }
+            for (i = 0; i < tabs.length; i++) { tabs[i].classList.remove("active-tab"); }
             document.getElementById(tabName).classList.add("active");
             btn.classList.add("active-tab");
+        }
+
+        function generateDreamPrompt() {
+            const text = document.getElementById('dreamInput').value;
+            if (!text) return alert('Введіть опис сну');
+            const prompt = `Дій як юнгіанський аналітик. Проаналізуй цей сон: "${text}". Виділи ключові символи, архетипи та запропонуй 3 запитання клієнту для ампліфікації (розкриття значення).`;
+            document.getElementById('dreamPromptText').innerText = prompt;
+            document.getElementById('dreamResult').classList.remove('hidden');
+        }
+
+        function generateCasePrompt() {
+            const text = document.getElementById('caseInput').value;
+            if (!text) return alert('Опишіть кейс');
+            const prompt = `Дій як клінічний супервізор. На основі цього опису: "${text}", запропонуй 2-3 техніки з КПТ або гештальт-терапії та склади чернетку структурної нотатки сесії.`;
+            document.getElementById('casePromptText').innerText = prompt;
+            document.getElementById('caseResult').classList.remove('hidden');
+        }
+
+        function copyText(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Запит скопійовано! Тепер просто встав його в чат до AI.');
+            });
         }
     </script>
 </body>
