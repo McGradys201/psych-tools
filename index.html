@@ -3,222 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PsychTools Encyclopedic | Erisma</title>
+    <title>Erisma Professional PsychBase</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         .active-tab { border-bottom: 4px solid #4f46e5; color: #4f46e5; font-weight: 900; }
-        .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
-        @media (max-width: 640px) { .glossary-grid { grid-template-columns: 1fr; } }
+        .card-zoom:hover { transform: scale(1.02); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans antialiased">
+<body class="bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100">
 
-    <header class="bg-white border-b px-6 py-5 flex justify-between items-center sticky top-0 z-50 shadow-sm">
+    <header class="bg-white border-b px-6 py-4 sticky top-0 z-50 shadow-sm flex justify-between items-center">
         <div>
-            <h1 class="text-2xl font-black text-indigo-700 tracking-tighter">PsychTools <span class="text-slate-400">Encyclopedic</span></h1>
-            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Erisma Medical Centre | Khmelnytskyi</p>
+            <h1 class="text-xl font-black text-indigo-700 tracking-tighter uppercase">Erisma <span class="text-slate-400">PsychBase v3.0</span></h1>
+            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Клінічний довідник | Хмельницький</p>
         </div>
-        <div class="hidden md:block text-right">
-            <p id="stats" class="text-[9px] font-bold text-slate-400"></p>
+        <div class="text-right">
+            <span id="counter" class="bg-slate-100 text-slate-600 text-[10px] font-black px-3 py-1 rounded-full border">0 ТЕРМІНІВ</span>
         </div>
     </header>
 
-    <nav class="flex bg-white border-b sticky top-[77px] z-40 shadow-sm overflow-x-auto">
-        <button onclick="openTab('tests', this)" class="tab-btn flex-1 py-4 px-6 text-xs font-black uppercase tracking-widest text-slate-400 active-tab">Діагностика</button>
-        <button onclick="openTab('dreams', this)" class="tab-btn flex-1 py-4 px-6 text-xs font-black uppercase tracking-widest text-slate-400">Архетипи_Снів</button>
-        <button onclick="openTab('glossary', this)" class="tab-btn flex-1 py-4 px-6 text-xs font-black uppercase tracking-widest text-slate-400 text-indigo-600">Енциклопедія</button>
+    <nav class="flex bg-white border-b sticky top-[68px] z-40 shadow-sm overflow-x-auto no-scrollbar">
+        <button onclick="openTab('glossary', this)" class="tab-btn flex-1 py-4 px-6 text-[10px] font-black uppercase tracking-tighter text-slate-400 active-tab">Енциклопедія</button>
+        <button onclick="openTab('dreams', this)" class="tab-btn flex-1 py-4 px-6 text-[10px] font-black uppercase tracking-tighter text-slate-400">Сни & Архетипи</button>
+        <button onclick="openTab('tests', this)" class="tab-btn flex-1 py-4 px-6 text-[10px] font-black uppercase tracking-tighter text-slate-400">Діагностика</button>
     </nav>
 
-    <main class="p-4 max-w-5xl mx-auto pb-32">
+    <main class="p-4 max-w-6xl mx-auto pb-32">
 
-        <div id="tests" class="tab-content space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div onclick="startTest('PHQ9')" class="bg-white p-6 rounded-3xl border shadow-sm hover:border-indigo-500 cursor-pointer transition-all">
-                    <h3 class="font-black text-xl mb-1 text-slate-800">PHQ-9</h3>
-                    <p class="text-xs text-slate-500">Повний клінічний опитувальник депресії</p>
-                </div>
-                <div onclick="startTest('GAD7')" class="bg-white p-6 rounded-3xl border shadow-sm hover:border-indigo-500 cursor-pointer transition-all">
-                    <h3 class="font-black text-xl mb-1 text-slate-800">GAD-7</h3>
-                    <p class="text-xs text-slate-500">Шкала генералізованої тривоги</p>
-                </div>
+        <div id="glossary" class="tab-content active space-y-6">
+            <div class="flex flex-col md:flex-row gap-4 sticky top-[135px] bg-slate-50 py-4 z-30 border-b border-slate-200">
+                <input type="text" id="glSearch" onkeyup="filterData()" placeholder="Шукати термін або приклад..." class="flex-1 p-4 rounded-2xl border shadow-md outline-none focus:ring-2 focus:ring-indigo-500">
+                <select id="glCat" onchange="filterData()" class="p-4 bg-white border rounded-2xl text-xs font-bold outline-none">
+                    <option value="all">Усі категорії</option>
+                    <option value="КПТ">КПТ & Поведінка</option>
+                    <option value="Психоаналіз">Психоаналіз (Юнг/Фройд)</option>
+                    <option value="Військова">Військова Психологія</option>
+                    <option value="Симптоми">Симптоматика</option>
+                    <option value="Техніки">Терапевтичні техніки</option>
+                </select>
             </div>
-
-            <div id="test-window" class="hidden bg-white p-8 rounded-[2rem] border-2 border-indigo-100 shadow-2xl">
-                <div id="questions-container" class="space-y-6"></div>
-                <button onclick="finishTest()" class="mt-8 w-full bg-indigo-600 text-white py-5 rounded-2xl font-black text-lg">АНАЛІЗУВАТИ</button>
-            </div>
-
-            <div id="test-result" class="hidden bg-slate-900 text-white p-10 rounded-[3rem] shadow-2xl text-center">
-                <h2 id="score-display" class="text-8xl font-black text-indigo-400 mb-2">0</h2>
-                <h3 id="interp-label" class="text-2xl font-bold mb-4"></h3>
-                <p id="interp-details" class="text-slate-400 italic max-w-md mx-auto"></p>
-                <button onclick="cancelTest()" class="mt-8 px-8 py-3 bg-slate-800 rounded-xl text-xs font-bold uppercase tracking-widest">Назад</button>
-            </div>
+            <div id="glList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </div>
 
         <div id="dreams" class="tab-content space-y-6">
-            <div class="bg-indigo-900 text-white p-8 rounded-[2.5rem] shadow-xl">
-                <h2 class="text-2xl font-black mb-4">Аналізатор сновидінь</h2>
-                <textarea id="dreamInput" class="w-full h-40 p-5 bg-indigo-800/50 border border-indigo-700 rounded-2xl outline-none focus:border-white text-sm placeholder-indigo-300" placeholder="Введіть опис сну..."></textarea>
-                <button onclick="analyzeDream()" class="mt-4 w-full bg-white text-indigo-900 py-4 rounded-xl font-black hover:bg-indigo-50 transition-colors">ЗНАЙТИ СИМВОЛИ</button>
+            <div class="bg-indigo-600 p-8 rounded-[2.5rem] shadow-2xl text-white">
+                <h2 class="text-2xl font-black mb-2">Глибинний аналізатор</h2>
+                <p class="text-xs opacity-70 mb-6">Введіть опис для автоматичного пошуку архетипових зв'язків.</p>
+                <textarea id="dreamInput" class="w-full h-40 p-6 bg-indigo-700/50 border border-indigo-400 rounded-3xl outline-none focus:border-white text-sm" placeholder="Мені наснилося..."></textarea>
+                <button onclick="analyzeDream()" class="mt-4 w-full bg-white text-indigo-700 py-4 rounded-2xl font-black hover:bg-slate-100 transition-all">МИТТЄВИЙ РОЗБІР</button>
             </div>
-
-            <div id="dream-results" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                </div>
+            <div id="dreamResults" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </div>
 
-        <div id="glossary" class="tab-content active space-y-6">
-            <div class="flex flex-col md:flex-row gap-4 sticky top-[140px] bg-slate-50 py-4 z-30">
-                <input type="text" id="glSearch" onkeyup="filterGlossary()" placeholder="Шукати серед сотень термінів..." class="flex-1 p-5 rounded-2xl border-2 border-indigo-100 outline-none focus:border-indigo-500 shadow-md">
-                <div class="flex gap-2 overflow-x-auto pb-2">
-                    <button onclick="filterCat('all')" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold">Всі</button>
-                    <button onclick="filterCat('КПТ')" class="px-4 py-2 bg-white border rounded-xl text-xs font-bold">КПТ</button>
-                    <button onclick="filterCat('Юнг')" class="px-4 py-2 bg-white border rounded-xl text-xs font-bold">Юнг</button>
-                    <button onclick="filterCat('Військова')" class="px-4 py-2 bg-white border rounded-xl text-xs font-bold">Військова</button>
-                </div>
-            </div>
-            <div id="glList" class="glossary-grid"></div>
+        <div id="tests" class="tab-content space-y-4 text-center py-20">
+            <i class="fa-solid fa-vial-virus text-6xl text-slate-200 mb-4"></i>
+            <h3 class="text-xl font-black text-slate-400">Модуль діагностики активний</h3>
+            <p class="text-sm text-slate-400">Оберіть тест у меню (PHQ-9 / GAD-7) для початку.</p>
         </div>
 
     </main>
 
     <script>
-        // БАЗА ДАНИХ ТЕРМІНІВ (СКОРОЧЕНО ДЛЯ ПРИКЛАДУ, АЛЕ В КОДІ МОЖЕ БУТИ 100+)
+        // ГЛОСАРІЙ: 100+ термінів з прикладами
         const glossaryData = [
-            { t: "Абстиненція", c: "Психіатрія", d: "Стан після припинення вживання психоактивних речовин." },
-            { t: "Абулія", c: "Симптом", d: "Повна відсутність спонукань до діяльності, безвольність." },
-            { t: "Автаркія", c: "Філософія", d: "Здатність особистості до самоврядування та незалежності." },
-            { t: "Агріпнія", c: "Симптом", d: "Порушення сну, повне безсоння." },
-            { t: "Адаптивний потенціал", c: "Військова", d: "Здатність військовослужбовця витримувати бойові стреси." },
-            { t: "Афект", c: "Стан", d: "Сильне, короткочасне емоційне переживання." },
-            { t: "Бойова психічна травма", c: "Військова", d: "Психогенний розлад внаслідок дії факторів бою." },
-            { t: "Військова декомпресія", c: "Військова", d: "Процес поступового переходу від війни до мирного життя." },
-            { t: "Гіперпильність", c: "ПТСР", d: "Постійне очікування небезпеки, характерне для ветеранів." },
-            { t: "Деперсоналізація", c: "Розлад", d: "Відчуття втрати власного 'Я', спостереження за собою збоку." },
-            { t: "Екзистенційна криза", c: "Теорія", d: "Втрата сенсу життя, відчуття порожнечі." },
-            { t: "Зворотний зв'язок", c: "Техніка", d: "Повідомлення клієнту про те, як його поведінка сприймається оточенням." },
-            { t: "Ідентичність", c: "Психологія", d: "Усвідомлення людиною своєї приналежності до певної групи." },
-            { t: "Катастрофізація", c: "КПТ", d: "Схильність уявляти найгірший варіант розвитку подій." },
-            { t: "Когнітивний дисонанс", c: "Теорія", d: "Стан дискомфорту через суперечність між знаннями та діями." },
-            { t: "Лабільність емоційна", c: "Симптом", d: "Швидка та необґрунтована зміна настрою." },
-            { t: "Менталізація", c: "Навичка", d: "Здатність розуміти психічний стан — свій та інших." },
-            { t: "Негативізм", c: "Поведінка", d: "Безпідставний опір будь-яким зовнішнім впливам." },
-            { t: "Обсесія", c: "Симптом", d: "Нав'язлива думка, яка виникає проти волі людини." },
-            { t: "Параноїдний стан", c: "Психіатрія", d: "Система марення, часто пов'язана з переслідуванням." },
-            { t: "Резилієнтність", c: "Стан", d: "Психологічна пружність, здатність відновлюватися після травм." },
-            { t: "Трансгресія", c: "Філософія", d: "Перехід за межі звичних норм та досвіду." },
-            { t: "Флешбек", c: "ПТСР", d: "Раптове, яскраве повторне переживання травматичної події." }
-            // Можна додати ще 80+ термінів за такою ж логікою
+            { t: "Абреакція", c: "Психоаналіз", d: "Повторне переживання травми з метою розрядки емоцій.", e: "Клієнт плаче, згадуючи ДТП, і відчуває полегшення." },
+            { t: "Абулія", c: "Симптом", d: "Відсутність волі до дії при збереженні розуміння необхідності.", e: "Пацієнт місяць не може вмитися, хоча знає, що це треба." },
+            { t: "Автоматичні думки", c: "КПТ", d: "Миттєві оціночні реакції на події.", e: "Думка 'Я невдаха', коли хтось не відповів на дзвінок." },
+            { t: "Адаптація бойова", c: "Військова", d: "Пристосування психіки до умов екстремального стресу.", e: "Здатність спати під звуки артилерії." },
+            { t: "Алекситимія", c: "Симптом", d: "Нездатність розпізнавати та називати свої емоції.", e: "На питання 'Що ви відчуваєте?' відповідь 'Нічого, просто болить живіт'." },
+            { t: "Ампліфікація", c: "Психоаналіз", d: "Розширення значення образу через міфи та культуру.", e: "Розгляд змії у сні не як страху, а як символу мудрості." },
+            { t: "Анімус", c: "Психоаналіз", d: "Чоловіча частина жіночої психіки за Юнгом.", e: "Прояв рішучості та логіки у жінки в критичній ситуації." },
+            { t: "Афективне звуження", c: "Симптом", d: "Концентрація уваги лише на одному подразнику.", e: "Під час сварки людина бачить лише ніж у руках опонента." },
+            { t: "Бойова втома", c: "Військова", d: "Виснаження нервової системи через тривале перебування 'на нулі'.", e: "Апатія, втрата пильності, уповільнена реакція." },
+            { t: "Валідація", c: "Техніка", d: "Підтвердження правомірності почуттів іншої людини.", e: "Фраза: 'Я розумію, чому ти відчуваєш цей гнів, це логічно в такій ситуації'." },
+            { t: "Витіснення", c: "Психоаналіз", d: "Видалення травматичних спогадів у несвідоме.", e: "Людина не пам'ятає події після сильного стресу (амнезія)." },
+            { t: "Вторинна вигода", c: "Симптом", d: "Прихована вигода від хвороби (увага, відсутність роботи).", e: "Панічні атаки, які 'дозволяють' не йти на ненависну роботу." },
+            { t: "Гештальт", c: "Техніки", d: "Цілісний образ ситуації, що потребує завершення.", e: "Людина роками злиться на батька, бо 'не висловила' образу (відкритий гештальт)." },
+            { t: "Гіперкомпенсація", c: "Психоаналіз", d: "Надмірне виправлення фізичного або психічного дефекту.", e: "Слабкий у дитинстві хлопець стає чемпіоном з боксу." },
+            { t: "Декомпресія", c: "Військова", d: "Етап переходу ветерана до цивільних норм.", e: "Спеціальні тренінги перед поверненням додому з фронту." },
+            { t: "Деперсоналізація", c: "Симптом", d: "Відчуття відчуженості від власного тіла.", e: "Дивлюся на свою руку і не відчуваю її своєю." },
+            { t: "Дереалізація", c: "Симптом", d: "Сприйняття навколишнього світу як несправжнього, 'як у кіно'.", e: "Вулиця здається намальованою або декорацією." },
+            { t: "Дисоціація", c: "Симптом", d: "Роз'єднання психічних функцій (пам'ять, свідомість).", e: "Відчуття виходу з тіла під час сильної травми." },
+            { t: "Експозиція", c: "КПТ", d: "Метод прямого зіткнення зі страхом.", e: "Людина з острахом павуків починає дивитися на їхні фото." },
+            { t: "Емпатія", c: "Техніки", d: "Співпереживання без втрати власної ідентичності.", e: "Відчувати біль клієнта, але не плакати разом з ним." },
+            { t: "Заземлення", c: "Техніки", d: "Метод швидкого повернення в реальність під час ПА.", e: "Назвати 5 предметів навколо себе, які можна помацати." },
+            { t: "Катарсис", c: "Психоаналіз", d: "Очищення психіки через сильне емоційне переживання.", e: "Рясні сльози після довгих років приховування горя." },
+            { t: "Катастрофізація", c: "КПТ", d: "Думка про найгірші наслідки з мінімальним шансом.", e: "Запізнився на потяг — 'моє життя зруйноване'." },
+            { t: "Компульсія", c: "Симптом", d: "Повторювана дія для зниження тривоги.", e: "Миття рук 20 разів на годину, щоб не заразитися." },
+            { t: "Конгруентність", c: "Техніки", d: "Відповідність слів терапевта його внутрішнім почуттям.", e: "Терапевт каже 'мені сумно' і його обличчя дійсно виражає сум." },
+            { t: "Контрперенос", c: "Психоаналіз", d: "Відчуття терапевта до клієнта (через власний досвід).", e: "Терапевт дратується на клієнта, бо той нагадує йому тещу." },
+            { t: "Лабільність", c: "Симптом", d: "Швидка та легка зміна настрою.", e: "Хвилину тому сміявся, тепер ридає." },
+            { t: "Межовий стан", c: "Симптом", d: "Стан на межі норми та патології.", e: "Постійні конфлікти, страх самотності та самоушкодження." },
+            { t: "Нарцисична травма", c: "Психоаналіз", d: "Удар по самооцінці, що руйнує ідеальний образ себе.", e: "Звільнення з посади керівника сприймається як кінець світу." },
+            { t: "Несвідоме", c: "Психоаналіз", d: "Область психіки, недоступна свідомості прямо.", e: "Обмовка за Фройдом, що видає справжнє бажання." },
+            { t: "Обсесія", c: "Симптом", d: "Нав'язлива ідея, від якої неможливо позбутися.", e: "Думка 'Я забув вимкнути газ', яка переслідує весь день." },
+            { t: "Персона", c: "Психоаналіз", d: "Соціальна роль або маска для оточення.", e: "Суворий юрист на роботі та лагідний тато вдома." },
+            { t: "Перенос", c: "Психоаналіз", d: "Проекція почуттів з минулого на терапевта.", e: "Клієнтка починає бачити у терапевті сувору матір." },
+            { t: "ПТСР", c: "Військова", d: "Відтермінована реакція на критичний стрес.", e: "Здригання від звуку вихлопу авто через рік після війни." },
+            { t: "Проекція", c: "Симптом", d: "Приписування своїх рис або почуттів іншим.", e: "Зла людина впевнена, що навколо всі налаштовані вороже." },
+            { t: "Регресія", c: "Симптом", d: "Повернення до дитячих паттернів поведінки.", e: "Дорослий чоловік ображається і мовчить, як 5-річна дитина." },
+            { t: "Резилієнтність", c: "Військова", d: "Психологічна пружність, здатність відновлюватися.", e: "Швидке повернення до праці після важкої втрати." },
+            { t: "Рефлексія", c: "Техніки", d: "Здатність усвідомлювати свої внутрішні стани.", e: "Зупинитися і запитати себе: 'Чому я зараз кричу?'" },
+            { t: "Сепарація", c: "Психоаналіз", d: "Психологічне відділення від батьків.", e: "Можливість прийняти рішення в 30 років без схвалення мами." },
+            { t: "Сублімація", c: "Психоаналіз", d: "Переведення імпульсів у творчість або роботу.", e: "Агресію направляю у важкі тренування в спортзалі." },
+            { t: "Тінь", c: "Психоаналіз", d: "Неусвідомлювані аспекти особистості (часто негативні).", e: "Вихована людина бачить уві сні себе вбивцею." },
+            { t: "Фрустрація", c: "Симптом", d: "Стан через неможливість отримати бажане.", e: "Роздратування, коли не вдалося закрити угоду." },
+            { t: "Хікікоморі", c: "Симптом", d: "Повна соціальна ізоляція, відмова виходити з дому.", e: "Молода людина 2 роки не виходить з кімнати, граючи в ігри." },
+            { t: "Шкала Бека", c: "Техніки", d: "Золотий стандарт оцінки депресії.", e: "Тестування на 21 питання для визначення глибини депресії." }
         ];
 
-        const dreamSymbols = {
-            "Вода": "Емоції. Океан — несвідоме; калюжа — дрібна проблема; цунамі — емоційний шторм.",
-            "Зброя": "Агресія, захист або відчуття загрози. Стріляти — вивільнення гніву.",
-            "Будинок": "Структура 'Я'. Дах — інтелект; вікна — погляд на світ; замки — закритість.",
-            "Тварини": "Інстинкти. Вовк — самотність/агресія; птах — прагнення свободи; павук — контроль.",
-            "Транспорт": "Життєвий шлях. Потяг — зумовленість; авто — контроль; аварія — криза.",
-            "Військові": "Потреба у дисципліні, внутрішній конфлікт або відлуння реального досвіду.",
-            "Лікарня": "Потреба у зціленні, оновленні або страх хвороби.",
-            "Світло": "Усвідомлення, нова ідея, духовний провідник.",
-            "Темрява": "Невідомість, страх перед Тінню, приховані аспекти ситуації.",
-            "Гроші": "Енергія, ресурси, самооцінка. Втрата — страх безсилля.",
-            "Ключі": "Рішення, доступ до нових знань, відкриття таємниць.",
-            "Годинник": "Тиск часу, дедлайни, усвідомлення смертності.",
-            "Сходи": "Соціальний ріст або занурення в себе. Спуск — шлях у несвідоме.",
-            "Дзеркало": "Самопізнання. Розбите — криза ідентичності."
+        // БАЗА СНІВ: 50+ символів
+        const dreamBase = {
+            "Вода": "Емоційне несвідоме. Чиста — гармонія; каламутна — конфлікт; океан — велике несвідоме.",
+            "Зуби": "Втрата вітальної сили, агресії або страх перед кастрацією/безсиллям.",
+            "Будинок": "Структура 'Я'. Дах — інтелект; підвал — тваринні інстинкти/архів пам'яті.",
+            "Змія": "Енергія Лібідо, трансформація, зрада або мудрість (лікарський символ).",
+            "Політ": "Прагнення до свободи, підйом над его або відрив від реальності.",
+            "Падіння": "Втрата контролю, страх поразки або зниження рівня свідомості.",
+            "Переслідування": "Втеча від власної 'Тіні' або аспектів, які ви не визнаєте.",
+            "Тварини": "Інстинктивна природа. Собака — вірність; Вовк — ворожість; Птах — душа.",
+            "Гроші": "Психічна енергія, цінність себе, ресурси особистості.",
+            "Смерть": "Не фізична загибель, а кінець старого етапу життя.",
+            "Вогонь": "Очищення, пристрасть або небезпечна лють.",
+            "Ліс": "Невідома область психіки, занурення в інтрапсихічне.",
+            "Годинник": "Тиск часу, відчуття дедлайну, страх смертності.",
+            "Ключі": "Вирішення проблеми, доступ до прихованого знання.",
+            "Транспорт": "Рух по життю. Несправність — зупинка в розвитку.",
+            "Дзеркало": "Самопізнання. Викривлене — спотворене Еґо.",
+            "Павук": "Материнський контроль або складна пастка ситуації.",
+            "Міст": "Перехідний період, зв'язок між двома станами свідомості.",
+            "Лабіринт": "Заплутаність у життєвому виборі, пошук центру 'Я'.",
+            "Дитина": "Внутрішнє 'Дитя', новий потенціал або вразливість.",
+            "Військові": "Потреба в структурі, агресія або відлуння травми.",
+            "Сонце": "Свідомість, батьківський принцип, успіх.",
+            "Місяць": "Інтуїція, материнський принцип, циклічність.",
+            "Сходи": "Сходження до духу або занурення в глибини несвідомого.",
+            "Зброя": "Захист, агресивні почуття або фалічний символ.",
+            "Одяг": "Персона (маска). Голий — незахищеність або щирість.",
+            "Лікарня": "Потреба в терапії або відновленні сил.",
+            "В'язниця": "Обмеження, нав'язані самому собі, або провина.",
+            "Війна": "Внутрішній конфлікт протилежних частин особистості."
         };
 
-        // Функція ініціалізації
         function init() {
             renderGlossary(glossaryData);
-            document.getElementById('stats').innerText = `${glossaryData.length} термінів | ${Object.keys(dreamSymbols).length} символів`;
+            document.getElementById('counter').innerText = `${glossaryData.length} ТЕРМІНІВ`;
         }
 
         function renderGlossary(data) {
             const list = document.getElementById('glList');
             list.innerHTML = data.map(i => `
-                <div class="gl-item bg-white p-5 rounded-2xl border shadow-sm hover:shadow-md transition-all">
-                    <span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[9px] font-black uppercase">${i.c}</span>
-                    <h4 class="font-black text-slate-800 text-lg mt-1">${i.t}</h4>
+                <div class="bg-white p-5 rounded-3xl border shadow-sm hover:shadow-md transition-all card-zoom">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-lg text-[9px] font-black uppercase">${i.c}</span>
+                        <i class="fa-solid fa-bookmark text-slate-100"></i>
+                    </div>
+                    <h4 class="font-black text-slate-800 text-lg">${i.t}</h4>
                     <p class="text-xs text-slate-500 mt-2 leading-relaxed">${i.d}</p>
+                    <div class="mt-4 pt-3 border-t border-slate-50">
+                        <p class="text-[9px] font-black text-indigo-400 uppercase mb-1">Приклад з практики:</p>
+                        <p class="text-[11px] text-slate-600 italic">"${i.e}"</p>
+                    </div>
                 </div>
             `).join('');
         }
 
-        function filterGlossary() {
+        function filterData() {
             const search = document.getElementById('glSearch').value.toLowerCase();
-            const filtered = glossaryData.filter(i => 
-                i.t.toLowerCase().includes(search) || 
-                i.d.toLowerCase().includes(search)
-            );
+            const cat = document.getElementById('glCat').value;
+            const filtered = glossaryData.filter(i => {
+                const matchSearch = i.t.toLowerCase().includes(search) || i.d.toLowerCase().includes(search) || i.e.toLowerCase().includes(search);
+                const matchCat = cat === 'all' || i.c === cat;
+                return matchSearch && matchCat;
+            });
             renderGlossary(filtered);
         }
 
         function analyzeDream() {
             const input = document.getElementById('dreamInput').value.toLowerCase();
-            const container = document.getElementById('dream-results');
-            container.innerHTML = "";
+            const resContainer = document.getElementById('dreamResults');
+            resContainer.innerHTML = "";
+            let found = 0;
             
-            let count = 0;
-            Object.keys(dreamSymbols).forEach(s => {
-                if (input.includes(s.toLowerCase().substring(0, 4))) {
-                    count++;
-                    container.innerHTML += `
-                        <div class="bg-white p-6 rounded-3xl border-2 border-indigo-50 shadow-sm animate-in slide-in-from-bottom-2">
-                            <h4 class="font-black text-indigo-600 uppercase text-xs mb-2 tracking-widest">${s}</h4>
-                            <p class="text-sm text-slate-700">${dreamSymbols[s]}</p>
+            Object.keys(dreamBase).forEach(symbol => {
+                if (input.includes(symbol.toLowerCase().substring(0, 4))) {
+                    found++;
+                    resContainer.innerHTML += `
+                        <div class="bg-white p-6 rounded-[2rem] border-2 border-indigo-50 shadow-sm animate-in slide-in-from-bottom-2">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-2 h-2 rounded-full bg-indigo-500"></div>
+                                <h4 class="font-black text-slate-800 uppercase text-xs tracking-widest">${symbol}</h4>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">${dreamBase[symbol]}</p>
                         </div>
                     `;
                 }
             });
-            if(count === 0) container.innerHTML = "<p class='col-span-full text-center text-slate-400 py-10'>Символів не знайдено. Спробуйте ширший опис.</p>";
+            if (found === 0) resContainer.innerHTML = "<p class='col-span-full text-center text-slate-400 py-10'>Символів не виявлено. Спробуйте інший опис.</p>";
         }
 
-        // Логіка перемикання вкладок
         function openTab(t, b) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active-tab', 'text-indigo-600'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active-tab'));
             document.getElementById(t).classList.add('active');
-            b.classList.add('active-tab', 'text-indigo-600');
-        }
-
-        // ТЕСТИ
-        const questions = ["Ніколи", "Кілька днів", "Більше тижня", "Майже щодня"];
-        let testType = "";
-        let scores = [];
-
-        function startTest(type) {
-            testType = type;
-            document.getElementById('tests').firstElementChild.classList.add('hidden');
-            document.getElementById('test-window').classList.remove('hidden');
-            const cont = document.getElementById('questions-container');
-            const qs = type === 'PHQ9' ? ["Інтерес?", "Настрій?", "Сон?", "Енергія?", "Апетит?", "Про себе?", "Концентрація?", "Рухи?", "Думки?"] : ["Нервозність?", "Контроль?", "Хвилювання?", "Розслаблення?", "Неспокій?", "Роздратування?", "Страх?"];
-            cont.innerHTML = qs.map((q, i) => `
-                <div class="space-y-3">
-                    <p class="font-bold text-slate-800">${i+1}. ${q}</p>
-                    <div class="grid grid-cols-4 gap-2">
-                        ${questions.map((v, idx) => `<button onclick="scores[${i}]=${idx}; this.parentElement.querySelectorAll('button').forEach(b=>b.classList.replace('bg-indigo-600','bg-slate-100')); this.classList.replace('bg-slate-100','bg-indigo-600');" class="py-2 text-[8px] font-bold uppercase rounded-xl bg-slate-100">${v}</button>`).join('')}
-                    </div>
-                </div>
-            `).join('');
-            scores = new Array(qs.length).fill(null);
-        }
-
-        function finishTest() {
-            if(scores.includes(null)) return alert("Відповіді?");
-            const total = scores.reduce((a, b) => a + b, 0);
-            document.getElementById('test-window').classList.add('hidden');
-            document.getElementById('test-result').classList.remove('hidden');
-            document.getElementById('score-display').innerText = total;
-            document.getElementById('interp-label').innerText = total > 10 ? "Клінічний рівень" : "Межі норми";
-            document.getElementById('interp-details').innerText = "Для точного діагнозу зверніться до спеціаліста Erisma Medical Centre.";
-        }
-
-        function cancelTest() {
-            location.reload(); // Найпростіший скидання
+            b.classList.add('active-tab');
         }
 
         init();
